@@ -1,0 +1,58 @@
+DB Tables 
+
+For this project only User, admin, products, order will be used
+Will still initailize all tables
+
+DB:
+- Users
+  - user_id
+  - first_name
+  - last_name
+  - username
+  - email
+  - password (Hashed)
+  - isArchived
+  - use3rdParty
+  - Credit Card (Hashed) // Not need needed, will make a external lib service
+- Admin
+  ** not sure if we want to keep it the same or seperate it. Seems
+    safer to seperate it, so no bad queries
+  - admin_id
+  - first_name
+  - last_name
+  - username
+  - email
+  - password (Hashed)
+  - isArchived
+  - session_login_time
+  - permission_id (FK)
+- Order
+  - order_id
+  - product_id(FK)
+  - user_id(FK)
+- Product
+  - product_id
+  - name
+  - price
+  - description
+  - image
+  - tags
+  - isArchived
+- Variants
+  - variant_id
+  - main_product_id (FK)
+  - variant_product_id (FK)
+- Product Tags
+  - product_tag_id
+  - tag_name
+- Promos (Not MVP)
+  - promo_id
+  - sale_name
+  - sale_amount (Percentage)
+  - tag_id (FK)
+  - product_id (FK)
+- Store (Just make for now)
+  - store_id
+  - store_name
+  - main_admin_user (FK)
+  - store_admin_user (FK)

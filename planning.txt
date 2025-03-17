@@ -1,0 +1,27 @@
+Planning for eccomerce test site:
+
+Use MUI/Pigment CSS
+
+For test purpose not all db tables will be used.
+
+We only want mvp: 
+- Users can login
+- Users can add items to card
+- Users can go to checkout
+- Users can see order history
+- Users can see product page
+
+- Admin can add products
+- Admin can login
+- Admin can catelog products with tags
+- Admin can create tags
+
+Start with backend and db
+
+Routes:
+/api/products
+/api/tags
+/api/search?
+
+/user/<id>
+/products/<id>
