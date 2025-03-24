@@ -1,5 +1,5 @@
-import SQLiteDB from "../db/sqlite/init";
-import BackendAdapter from "./models/adapter";
+import SQLiteDB from "../db/sqlite/";
+import { BackendAdapter } from "./models/adapter";
 
 // Where we initialize our connection to grab data
 enum API_TYPE {
@@ -7,7 +7,7 @@ enum API_TYPE {
   THIRD_PARTY = "THIRD_PARTY",
 }
 
-export default function init(): BackendAdapter | Error {
+function init(): BackendAdapter {
   let adapter: BackendAdapter;
   //get .env here
   switch (process.env.API_TYPE as API_TYPE) {
@@ -22,3 +22,5 @@ export default function init(): BackendAdapter | Error {
   }
   return adapter;
 }
+const DataAPI = init();
+export default DataAPI;

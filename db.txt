@@ -1,4 +1,4 @@
-DB Tables 
+DB Tables
 
 For this project only User, admin, products, order will be used
 Will still initailize all tables
@@ -36,7 +36,7 @@ DB:
   - price
   - description
   - image
-  - tags
+  - tags //Not used using db lookup tables
   - isArchived
 - Variants
   - variant_id
