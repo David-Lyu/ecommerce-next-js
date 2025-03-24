@@ -35,13 +35,13 @@ export default class SQLiteDB implements BackendAdapter {
   // For testing purposes: This class should never be extended so no worries on it being private
   protected async __initDB() {
     //Check if db exists
-    if (!existsSync("./sqlite.db")) {
+    if (!existsSync(process.cwd() + "/src/lib/api/db/sqlite/sqlite.db")) {
       //open database
       this.__createDB();
     }
 
     this.db = await open({
-      filename: "./sqlite.db",
+      filename: process.cwd() + "/src/lib/api/db/sqlite/sqlite.db",
       driver: sqlite.Database,
     });
     let statement = "";

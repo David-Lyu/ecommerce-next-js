@@ -1,11 +1,10 @@
 import DataAPI from "@/lib/api/adapter/client";
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
   // check if req.json() is truthy
   const body = req.method == "GET";
   console.log(body);
   const data = DataAPI.getProduct();
   console.log(data);
-  console.log(res.body);
   return Response.json({});
 }
