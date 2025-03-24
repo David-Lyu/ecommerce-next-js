@@ -4,6 +4,13 @@ import { existsSync, writeFileSync } from "fs";
 import { BackendAdapter } from "../../adapter/models/adapter";
 import { ProductListType, ProductType } from "../../adapter/models/products";
 
+/*
+  So thinking about real life situation, we would want to move this to its own backend.
+  So it would run similarly to MySQL or PostgreSQL, and that if this app fails,
+  The backend would still be up and wouldn't need to reopen the backend...only matters if sql size is large
+  (Not tested if it would block or take a while, but stands to reason if this is GB's large it would take
+  as fast as ram available to open, read and parse the file/buffer)
+*/
 export default class SQLiteDB implements BackendAdapter {
   db: Database | undefined;
   isInitailized: boolean = false;
