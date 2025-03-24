@@ -1,10 +1,11 @@
-import sqlite, { open } from "sqlite";
+import { Database, open } from "sqlite";
+import sqlite from "sqlite3";
 import { existsSync, writeFileSync } from "fs";
 import { BackendAdapter } from "../../adapter/models/adapter";
 import { ProductListType, ProductType } from "../../adapter/models/products";
 
 export default class SQLiteDB implements BackendAdapter {
-  db: sqlite.Database | undefined;
+  db: Database | undefined;
   isInitailized: boolean = false;
   constructor() {
     //Init database here
@@ -44,27 +45,27 @@ export default class SQLiteDB implements BackendAdapter {
       driver: sqlite.Database,
     });
     let statement = "";
-    statement += this.__initProductTable();
-    statement += this.__initUserTable();
-    statement += this.__initAdminTable();
-    statement += this.__initOrderTable();
-    statement += this.__initVariantsTable();
-    statement += this.__initProductTagTable();
-    statement += this.__initPromoTable();
-    statement += this.__initStoreTable();
+    statement += this.__initProductTable() + "\n";
+    // statement += this.__initUserTable() + "\n";
+    // statement += this.__initAdminTable() + "\n";
+    // statement += this.__initOrderTable() + "\n";
+    statement += this.__initVariantsTable() + "\n";
+    statement += this.__initProductTagTable() + "\n";
+    statement += this.__initPromoTable() + "\n";
+    statement += this.__initStoreTable() + "\n";
 
     this.db.exec(statement);
   }
 
   // protected for testing purposes: Creation of all possible tables
   protected __initProductTable(): string {
-    return `CREATE TABLE IF NOT EXIST product (
+    return `CREATE TABLE IF NOT EXISTS product (
       prod_id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       price INTEGER NOT NULL,
       description TEXT,
       image TEXT,
-      isArchived BOOLEAN NOT NULL CHECK (isArchieved in (0,1))
+      isArchived BOOLEAN NOT NULL CHECK (isArchived in (0,1))
       )`;
   }
   protected __initUserTable(): string {
@@ -75,7 +76,7 @@ export default class SQLiteDB implements BackendAdapter {
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    isArchived BOOLEAN NOT NULL CHECK (isArchieved in (0,1)),
+    isArchived BOOLEAN NOT NULL CHECK (isArchived in (0,1)),
     session_id TEXT,
     auth_type TEXT
     )`;
@@ -90,7 +91,7 @@ export default class SQLiteDB implements BackendAdapter {
     password TEXT NOT NULL,
     session_id TEXT,
     auth_type TEXT,
-    isArchived BOOLEAN NOT NULL CHECK (isArchieved in (0,1)),
+    isArchived BOOLEAN NOT NULL CHECK (isArchived in (0,1)),
     )`;
   }
   protected __initOrderTable(): string {

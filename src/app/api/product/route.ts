@@ -6,5 +6,6 @@ export async function GET(req: Request, res: Response) {
   console.log(body);
   const data = DataAPI.getProduct();
   console.log(data);
-  res.json();
+  console.log(res.body);
+  return Response.json({});
 }
