@@ -13,6 +13,19 @@ export default class SQLiteDB implements BackendAdapter {
     this.__initDB();
   }
 
+  initialize(): void {
+    // let i = 0;
+    // while (!this.db) {
+    //   i++;
+    //   if (i % 1000000 == 0) {
+    //     console.log(this.db);
+    //     console.log("waiting for db" + i);
+    //   }
+    // }
+    // console.log("db initialized");
+    return;
+  }
+
   getProduct(): ProductType {
     const objMock = {
       amount: 0.0,
@@ -53,7 +66,7 @@ export default class SQLiteDB implements BackendAdapter {
     statement += this.__initProductTagTable() + "\n";
     statement += this.__initPromoTable() + "\n";
     statement += this.__initStoreTable() + "\n";
-
+    console.log("executing statement");
     this.db.exec(statement);
   }
 

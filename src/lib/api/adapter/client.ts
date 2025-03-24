@@ -8,7 +8,6 @@ enum API_TYPE {
 }
 
 function init(): BackendAdapter {
-  console.log("init gets ran");
   let adapter: BackendAdapter;
   //get .env here
   switch (process.env.API_TYPE as API_TYPE) {
