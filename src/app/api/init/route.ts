@@ -1,14 +1,16 @@
 import DataAPI from "@/lib/api/adapter/client";
 
 let hasInit = false;
+// eslint-disable-next-line
 export async function GET(req: Request) {
-  console.log(req.body);
+  let message = "";
   if (!hasInit) {
     console.log("Intializing Database");
     DataAPI.initialize();
     hasInit = true;
+    message = "Database Intialized";
   } else {
-    //redirect to homepage
+    message = "Database already Initialized";
   }
-  return Response.json({});
+  return Response.json({ message });
 }
