@@ -49,7 +49,7 @@ export default class SQLiteDB implements BackendAdapter {
 
   // For testing purposes: This class should never be extended so no worries on it being private
   protected __createDB() {
-    writeFileSync("./sqlite.db", "");
+    writeFileSync("/src/lib/api/db/sqlite/sqlite.db", "");
   }
 
   // For testing purposes: This class should never be extended so no worries on it being private
@@ -66,14 +66,15 @@ export default class SQLiteDB implements BackendAdapter {
     });
     let statement = "";
     statement += this.__initProductTable() + "\n";
-    // statement += this.__initUserTable() + "\n";
-    // statement += this.__initAdminTable() + "\n";
-    // statement += this.__initOrderTable() + "\n";
+    statement += this.__initUserTable() + "\n";
+    statement += this.__initAdminTable() + "\n";
+    statement += this.__initOrderTable() + "\n";
     statement += this.__initVariantsTable() + "\n";
     statement += this.__initProductTagTable() + "\n";
     statement += this.__initPromoTable() + "\n";
     statement += this.__initStoreTable() + "\n";
     console.log("executing statement");
+    console.log(this.db);
     this.db.exec(statement);
   }
 
