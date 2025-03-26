@@ -1,4 +1,4 @@
-import DataAPI from "@/lib/api/adapter/client";
+import DataAPI from "@/lib/api/data_adapter/client";
 
 let hasInit = false;
 // eslint-disable-next-line

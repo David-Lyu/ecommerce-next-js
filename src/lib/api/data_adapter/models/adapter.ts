@@ -1,6 +1,6 @@
 import { ProductListType, ProductType } from "./products";
 
-export interface BackendAdapter {
+export interface DataAdapter {
   initialize(): void;
   getProducts(): ProductListType;
   getProduct(): ProductType;

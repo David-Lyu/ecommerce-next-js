@@ -1,8 +1,8 @@
 import { Database, open } from "sqlite";
 import sqlite from "sqlite3";
 import { existsSync, writeFileSync } from "fs";
-import { BackendAdapter } from "../../adapter/models/adapter";
-import { ProductListType, ProductType } from "../../adapter/models/products";
+import { DataAdapter } from "../../models/adapter";
+import { ProductListType, ProductType } from "../../models/products";
 
 /*
   So thinking about real life situation, we would want to move this to its own backend.
@@ -11,7 +11,7 @@ import { ProductListType, ProductType } from "../../adapter/models/products";
   (Not tested if it would block or take a while, but stands to reason if this is GB's large it would take
   as fast as ram available to open, read and parse the file/buffer)
 */
-export default class SQLiteDB implements BackendAdapter {
+export default class SQLiteDB implements DataAdapter {
   db: Database | undefined;
   isInitailized: boolean = false;
   constructor() {
