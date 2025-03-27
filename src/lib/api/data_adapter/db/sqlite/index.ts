@@ -121,7 +121,10 @@ export default class SQLiteDB implements DataAdapter {
   protected __initVariantsTable(): string {
     return ``;
   }
-  protected __initProductTagTable(): string {
+  protected __initiTagTable(): string {
+    return ``;
+  }
+  protected __initProductTagLookUpTable(): string {
     return ``;
   }
   protected __initPromoTable(): string {

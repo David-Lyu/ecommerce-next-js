@@ -14,6 +14,14 @@ Product type:
   "count": number.  // Omit
   }
 */
+const tagList = [
+  "men-s_clothing",
+  "jewelery",
+  "electronics",
+  "women-s_clothing",
+];
+
+init();
 
 function connectDB() {
   const dbPath =
@@ -28,28 +36,34 @@ function init() {
   //Connect with db
   const db = connectDB();
   //Should make it a map and then do logic all at once but going to seperate the logic in for loop
-  const categorySet = new Set();
-  console.log(products[0]);
+
   db.then((db) => {
     console.log(db);
     //Adds products into db
+    for (let i = 0; i < tagList.length; i++) {
+      //insert categories
+    }
     for (let i = 0; i < products.length; i++) {
       if (products?.[i].category) {
         categorySet.add(products[i].category);
       }
       //sends products into db
     }
-    //Adds categories(tags) into db
-    //send categorySet into db
-    const regex = /[" "/'/"]/;
-    categorySet.forEach((category) => {
-      console.log(category);
-      let parsed = category.replaceAll(/'/g, "-");
-      parsed = parsed.replaceAll(/[ ""]/g, "_");
-      console.log(parsed);
-    });
+    // Used to get the list of categorys in products json.
+    // const categorySet = new Set();
+    // categorySet.forEach((category) => {
+    //   let parsed = category.replaceAll(/'/g, "-");
+    //   parsed = parsed.replaceAll(/[ ""]/g, "_");
+    //   console.log(parsed);
+    // });
   }).catch((e) => {
     console.log(e);
   });
 }
-init();
+
+function insertProducts() {
+  return `INSERT INTO products() VALUES(? ? ?)`;
+}
+function insertTags() {
+  return `INSERT INTO tags() VALUES()`;
+}
