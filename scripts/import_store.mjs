@@ -44,7 +44,8 @@ function init() {
     const regex = /[" "/'/"]/;
     categorySet.forEach((category) => {
       console.log(category);
-      const parsed = category.replaceAll(" ", "_");
+      let parsed = category.replaceAll(/'/g, "-");
+      parsed = parsed.replaceAll(/[ ""]/g, "_");
       console.log(parsed);
     });
   }).catch((e) => {
