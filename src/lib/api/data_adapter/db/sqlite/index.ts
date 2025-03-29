@@ -64,13 +64,16 @@ export default class SQLiteDB implements DataAdapter {
       filename: process.cwd() + "/src/lib/api/db/sqlite/sqlite.db",
       driver: sqlite.Database,
     });
+
+    this.db.exec("PRAGMA foreign_keys = ON");
+
     let statement = "";
     statement += this.__initProductTable() + "\n";
-    statement += this.__initUserTable() + "\n";
+    statement += this.__initCustomerTable() + "\n";
     statement += this.__initAdminTable() + "\n";
     statement += this.__initOrderTable() + "\n";
     statement += this.__initVariantsTable() + "\n";
-    statement += this.__initProductTagTable() + "\n";
+    statement += this.__initProductTagLookUpTable() + "\n";
     statement += this.__initPromoTable() + "\n";
     statement += this.__initStoreTable() + "\n";
     console.log("executing statement");
@@ -83,15 +86,15 @@ export default class SQLiteDB implements DataAdapter {
     return `CREATE TABLE IF NOT EXISTS product (
       prod_id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      price INTEGER NOT NULL,
+      price REAL NOT NULL,
       description TEXT,
       image TEXT,
       isArchived BOOLEAN NOT NULL CHECK (isArchived in (0,1))
       )`;
   }
-  protected __initUserTable(): string {
-    return `CREATE table IF NOT EXISTS user (
-    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  protected __initCustomerTable(): string {
+    return `CREATE table IF NOT EXISTS customer (
+    customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     username TEXT NOT NULL UNIQUE,
@@ -116,8 +119,27 @@ export default class SQLiteDB implements DataAdapter {
     )`;
   }
   protected __initOrderTable(): string {
-    return ``;
+    return `CREATE TABLE IF NOT EXISTS order (
+    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_date TEXT NOT NULL,
+    shipped_date TEXT NOT NULL,
+    status BOOLEAN NOT NULL CHECK (isArchived in (0,1)),
+    total REAL NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (customer_id)
+      REFERENCES customer (customer_id)
+    )
+    `;
   }
+
+  protected __initOrderProductLookup(): string {
+    return `CREATE TABLE IF NOT EXISTS order_product_lookup (
+    op_lookup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL,
+
+    )`;
+  }
+
   protected __initVariantsTable(): string {
     return ``;
   }
