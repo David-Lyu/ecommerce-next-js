@@ -28,8 +28,14 @@ DB:
   - permission_id (FK)
 - Order
   - order_id
-  - product_id(FK)
+  - order_date
+  - shipped_date
+  - status
+  - total
   - user_id(FK)
+- Order_Product_Lookup
+  -
+  - order_id
 - Product
   - product_id
   - name
