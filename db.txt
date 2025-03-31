@@ -32,7 +32,7 @@ DB:
   - shipped_date
   - status
   - total
-  - user_id(FK)
+  - customer_id(FK)
 - Order_Product_Lookup
   - op_lookup_id
   - quantity
