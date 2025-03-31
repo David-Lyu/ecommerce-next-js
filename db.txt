@@ -34,8 +34,10 @@ DB:
   - total
   - user_id(FK)
 - Order_Product_Lookup
-  -
-  - order_id
+  - op_lookup_id
+  - quantity
+  - product_id (FK)
+  - order_id (FK)
 - Product
   - product_id
   - name
@@ -51,12 +53,20 @@ DB:
 - Product Tags
   - product_tag_id
   - tag_name
-- Promos (Not MVP)
+- Product Tag Lookup Table
+  - product_tag_lookup_table_id
+  - product_id (FK)
+  - tag_id (FK)
+- Promo (Not MVP)
   - promo_id
   - sale_name
   - sale_amount (Percentage)
+  - sale_start
+  - sale_end
+- Promo Tag Lookup Table
+  - pt_id
+  - promo_id (FK)
   - tag_id (FK)
-  - product_id (FK)
 - Store (Just make for now)
   - store_id
   - store_name

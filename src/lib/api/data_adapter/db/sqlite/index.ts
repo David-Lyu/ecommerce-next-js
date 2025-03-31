@@ -14,6 +14,7 @@ import { ProductListType, ProductType } from "../../models/products";
 export default class SQLiteDB implements DataAdapter {
   db: Database | undefined;
   isInitailized: boolean = false;
+  dbPath: string = "/src/lib/api/data_adapter/db/sqlite/sqlite.db";
   constructor() {
     //Init database here
     //fs to see if file exists
@@ -49,42 +50,43 @@ export default class SQLiteDB implements DataAdapter {
 
   // For testing purposes: This class should never be extended so no worries on it being private
   protected __createDB() {
-    writeFileSync("/src/lib/api/db/sqlite/sqlite.db", "");
+    writeFileSync(process.cwd() + this.dbPath, "");
   }
 
   // For testing purposes: This class should never be extended so no worries on it being private
   protected async __initDB() {
     //Check if db exists
-    if (!existsSync(process.cwd() + "/src/lib/api/db/sqlite/sqlite.db")) {
+    if (!existsSync(process.cwd() + this.dbPath)) {
       //open database
       this.__createDB();
     }
 
     this.db = await open({
-      filename: process.cwd() + "/src/lib/api/db/sqlite/sqlite.db",
+      filename: process.cwd() + this.dbPath,
       driver: sqlite.Database,
     });
+    // Allows for foreign_keys, since disabled by default
+    await this.db.exec("PRAGMA foreign_keys = ON");
 
-    this.db.exec("PRAGMA foreign_keys = ON");
-
-    let statement = "";
-    statement += this.__initProductTable() + "\n";
-    statement += this.__initCustomerTable() + "\n";
-    statement += this.__initAdminTable() + "\n";
-    statement += this.__initOrderTable() + "\n";
-    statement += this.__initVariantsTable() + "\n";
-    statement += this.__initProductTagLookUpTable() + "\n";
-    statement += this.__initPromoTable() + "\n";
-    statement += this.__initStoreTable() + "\n";
     console.log("executing statement");
-    console.log(this.db);
-    this.db.exec(statement);
+    await this.db.exec(this.__initProductTable());
+    await this.db.exec(this.__initCustomerTable());
+    await this.db.exec(this.__initAdminTable());
+    await this.db.exec(this.__initOrderTable());
+    await this.db.exec(this.__initOrderProductLookUpTable());
+    await this.db.exec(this.__initVariantsTable());
+    await this.db.exec(this.__initProductTagLookUpTable());
+    await this.db.exec(this.__initPromoTable());
+    await this.db.exec(this.__initPromoTagLookUpTable());
+    await this.db.exec(this.__initStoreTable());
+    //statement += this.__initStoreAdminLookUpTable() + "\n";
+    console.log("sql creation completed");
   }
 
   // protected for testing purposes: Creation of all possible tables
   protected __initProductTable(): string {
     return `CREATE TABLE IF NOT EXISTS product (
-      prod_id INTEGER PRIMARY KEY AUTOINCREMENT,
+      product_id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       price REAL NOT NULL,
       description TEXT,
@@ -115,44 +117,90 @@ export default class SQLiteDB implements DataAdapter {
     password TEXT NOT NULL,
     session_id TEXT,
     auth_type TEXT,
-    isArchived BOOLEAN NOT NULL CHECK (isArchived in (0,1)),
+    isArchived BOOLEAN NOT NULL CHECK (isArchived in (0,1))
     )`;
   }
   protected __initOrderTable(): string {
-    return `CREATE TABLE IF NOT EXISTS order (
+    return `CREATE TABLE IF NOT EXISTS order_info (
     order_id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_date TEXT NOT NULL,
     shipped_date TEXT NOT NULL,
-    status BOOLEAN NOT NULL CHECK (isArchived in (0,1)),
+    status BOOLEAN NOT NULL CHECK (status in (0,1)),
     total REAL NOT NULL,
-    user_id INTEGER NOT NULL,
+    customer_id INTEGER NOT NULL,
     FOREIGN KEY (customer_id)
       REFERENCES customer (customer_id)
-    )
-    `;
+    )`;
   }
 
-  protected __initOrderProductLookup(): string {
+  protected __initOrderProductLookUpTable(): string {
     return `CREATE TABLE IF NOT EXISTS order_product_lookup (
     op_lookup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    quantity INTEGER NOT NULL,
     order_id INTEGER NOT NULL,
-
+    product_id INTEGER NOT NULL,
+    FOREIGN KEY (order_id)
+      REFERENCES order_info (order_id),
+    FOREIGN KEY (product_id)
+      REFERENCES product (product_id)
     )`;
   }
 
   protected __initVariantsTable(): string {
-    return ``;
+    return `CREATE TABLE IF NOT EXISTS variant (
+    variant_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    main_product_id INTEGER NOT NULL,
+    variant_product_id INTEGER NOT NULL,
+    FOREIGN KEY (main_product_id)
+      REFERENCES product (product_id),
+    FOREIGN KEY (variant_product_id)
+      REFERENCES product (product_id)
+    )`;
   }
-  protected __initiTagTable(): string {
-    return ``;
+  protected __initProductTagTable(): string {
+    return `CREATE TABLE IF NOT EXISTS product_tag (
+    product_tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_tag_name TEXT NOT NULL
+    )`;
   }
   protected __initProductTagLookUpTable(): string {
-    return ``;
+    return `CREATE TABLE IF NOT EXISTS product_tag_lookup_table (
+    pt_lookup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    FOREIGN KEY (product_id)
+      REFERENCES product (product_id),
+    FOREIGN KEY (tag_id)
+      REFERENCES tag (tag_id)
+    )`;
   }
   protected __initPromoTable(): string {
-    return ``;
+    return `CREATE TABLE IF NOT EXISTS promo (
+    promo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sale_name TEXT NOT NULL,
+    sale_amount INTEGER NOT NULL,
+    isPercent BOOLEAN NOT NULL CHECK (isPercent in (0,1)),
+    sale_start_date TEXT NOT NULL,
+    sale_end_date TEXT NOT NULL
+    )`;
+  }
+
+  protected __initPromoTagLookUpTable(): string {
+    return `CREATE TABLE IF NOT EXISTS promo_tag_lookup_table (
+    promot_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    promo_id INTEGER NOT NULL,
+    tag_id INTEGER NOT NULL,
+    FOREIGN KEY (promo_id)
+      REFERENCES promo (promo_id),
+    FOREIGN KEY (tag_id)
+      REFERENCES tag (tag_id)
+    )`;
   }
   protected __initStoreTable(): string {
-    return ``;
+    return `CREATE TABLE IF NOT EXISTS store (
+    store_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    store_name TEXT NOT NULL,
+    main_admin_user INTEGER NOT NULL
+    )`;
   }
 }
