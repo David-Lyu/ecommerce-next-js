@@ -14,12 +14,12 @@ Product type:
   "count": number.  // Omit
   }
 */
-const tagList = [
-  "men-s_clothing",
-  "jewelery",
-  "electronics",
-  "women-s_clothing",
-];
+const tagList = {
+  "men's clothing": 0,
+  jewelery: 0,
+  electronics: 0,
+  "women's clothing": 0,
+};
 
 init();
 
@@ -32,38 +32,48 @@ function connectDB() {
   });
 }
 
-function init() {
+async function init() {
   //Connect with db
-  const db = connectDB();
-  //Should make it a map and then do logic all at once but going to seperate the logic in for loop
+  const db = await connectDB();
+  //Adds tags into db
+  for (let category in tagList) {
+    const tagStatement = await db.prepare(insertProductTag());
+    tagStatement.bind(category);
+    const tagId = await tagStatement.get();
+    tagList[category] = tagId.product_tag_id;
+  }
 
-  db.then((db) => {
-    console.log(db);
-    //Adds products into db
-    for (let i = 0; i < tagList.length; i++) {
-      //insert categories
+  for (let i = 0; i < products.length; i++) {
+    //insert Product
+    const productStatement = await db.prepare(insertProduct());
+    const product = products[i];
+    console.log(product);
+    //name,price,description,image,isArchived
+    productStatement.bind(
+      product.title,
+      product.price,
+      product.description,
+      product.image,
+      true,
+    );
+    const prodId = await productStatement.get();
+
+    if (products?.[i].category) {
+      console.log(prodId, tagList[products[i].category]);
+      const prodTagStatement = await db.prepare(insertProductTagLookUp());
+      prodTagStatement.bind(prodId.product_id, tagList[products[i].category]);
+      prodTagStatement.run();
     }
-    for (let i = 0; i < products.length; i++) {
-      if (products?.[i].category) {
-        categorySet.add(products[i].category);
-      }
-      //sends products into db
-    }
-    // Used to get the list of categorys in products json.
-    // const categorySet = new Set();
-    // categorySet.forEach((category) => {
-    //   let parsed = category.replaceAll(/'/g, "-");
-    //   parsed = parsed.replaceAll(/[ ""]/g, "_");
-    //   console.log(parsed);
-    // });
-  }).catch((e) => {
-    console.log(e);
-  });
+  }
 }
 
-function insertProducts() {
-  return `INSERT INTO products() VALUES(? ? ?)`;
+function insertProduct() {
+  return `INSERT INTO product (name,price,description,image,isArchived) VALUES (?,?,?,?,?) RETURNING product_id;`;
 }
-function insertTags() {
-  return `INSERT INTO tags() VALUES()`;
+function insertProductTag() {
+  return `INSERT INTO product_tag (product_tag_name) VALUES (?) RETURNING product_tag_id;`;
+}
+
+function insertProductTagLookUp() {
+  return `INSERT INTO product_tag_lookup (product_id, tag_id) VALUES (?,?);`;
 }

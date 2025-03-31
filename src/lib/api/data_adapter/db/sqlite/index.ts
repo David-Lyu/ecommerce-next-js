@@ -93,6 +93,7 @@ export default class SQLiteDB implements DataAdapter {
     await this.db.exec(this.__initOrderTable());
     await this.db.exec(this.__initOrderProductLookUpTable());
     await this.db.exec(this.__initVariantsTable());
+    await this.db.exec(this.__initProductTagTable());
     await this.db.exec(this.__initProductTagLookUpTable());
     await this.db.exec(this.__initPromoTable());
     await this.db.exec(this.__initPromoTagLookUpTable());
@@ -256,11 +257,11 @@ export default class SQLiteDB implements DataAdapter {
   protected __initProductTagTable(): string {
     return `CREATE TABLE IF NOT EXISTS product_tag (
     product_tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_tag_name TEXT NOT NULL
+    product_tag_name TEXT NOT NULL UNIQUE
     )`;
   }
   protected __initProductTagLookUpTable(): string {
-    return `CREATE TABLE IF NOT EXISTS product_tag_lookup_table (
+    return `CREATE TABLE IF NOT EXISTS product_tag_lookup (
     pt_lookup_id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
@@ -282,7 +283,7 @@ export default class SQLiteDB implements DataAdapter {
   }
 
   protected __initPromoTagLookUpTable(): string {
-    return `CREATE TABLE IF NOT EXISTS promo_tag_lookup_table (
+    return `CREATE TABLE IF NOT EXISTS promo_tag_lookup (
     promot_id INTEGER PRIMARY KEY AUTOINCREMENT,
     promo_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
