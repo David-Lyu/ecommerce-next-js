@@ -48,7 +48,7 @@ async function init() {
     const productStatement = await db.prepare(insertProduct());
     const product = products[i];
     console.log(product);
-    //name,price,description,image,isArchived
+    //name,price,description,image,isArchived  //TODO: Add amount_sold as field
     productStatement.bind(
       product.title,
       product.price,

@@ -39,7 +39,25 @@ export default class SQLiteDB implements DataAdapter {
     return;
   }
 
-  getProduct(): Promise<ProductType> {
+  getProduct(id: number, categoryId?: number): Promise<ProductType> {
+    let sql = "SELECT * FROM product \n";
+    //get category id from name?
+    if (categoryId) {
+      sql += "INNER JOIN category_product_lookup";
+    }
+    sql += "WHERE product_id = ?";
+    if (this.db) {
+      this.db
+        .prepare(sql)
+        .then((statement) => {
+          if (categoryId) {
+            statement.bind(categoryId, id);
+          } else {
+            statement.bind(id);
+          }
+        })
+        .catch(console.error);
+    }
     const objMock = {
       amount: 0.0,
       name: "test",
