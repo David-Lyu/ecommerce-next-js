@@ -19,14 +19,13 @@ export default class SQLiteDB implements DataAdapter {
   constructor() {
     //Init database here
     //fs to see if file exists
-    this.__initDB();
   }
 
   /**
    * Do not use doesn't do anything haha
    * @returns void
    */
-  initialize(): void {
+  async initialize() {
     // let i = 0;
     // while (!this.db) {
     //   i++;
@@ -36,32 +35,28 @@ export default class SQLiteDB implements DataAdapter {
     //   }
     // }
     // console.log("db initialized");
-    return;
+    await this.__initDB();
+    console.log(this.db);
   }
 
-  getProduct(id: number, categoryId?: number): Promise<ProductType> {
+  getProduct(id: number): Promise<ProductType> {
     let sql = "SELECT * FROM product \n";
     //get category id from name?
-    if (categoryId) {
-      sql += "INNER JOIN category_product_lookup";
-    }
     sql += "WHERE product_id = ?";
     if (this.db) {
       this.db
         .prepare(sql)
         .then((statement) => {
-          if (categoryId) {
-            statement.bind(categoryId, id);
-          } else {
-            statement.bind(id);
-          }
+          statement.bind(id);
         })
         .catch(console.error);
     }
     const objMock = {
-      amount: 0.0,
-      name: "test",
+      id: 0,
+      price: 0.0,
+      title: "test",
       description: "Test Description",
+      image: "",
     };
 
     return Promise.resolve(objMock);
@@ -70,25 +65,44 @@ export default class SQLiteDB implements DataAdapter {
   async getProducts(
     limit: number = 10,
     offset: number = 0,
+    categoryIdList?: number[],
   ): Promise<ProductListType> {
-    const statement = await this.db?.prepare(
-      "SELECT * FROM product LIMIT=? AND offset=?;",
-    );
+    let sql = "SELECT * FROM product\n";
+    if (categoryIdList?.length) {
+      sql +=
+        "INNER JOIN product_tag_lookup as PTL on product.product_id = PTL.product_id WHERE tag_id IN (";
+      for (let i = 0; i < categoryIdList.length; i++) {
+        sql += "?";
+        // Adds comma to everything but the last ?
+        if (i < categoryIdList.length - 1) sql += ",";
+      }
+      sql += ") and ";
+    }
+    sql += "LIMIT=? AND offset=?;";
+    console.log(sql);
+
+    const statement = await this.db?.prepare(sql);
+    console.log(this.db);
     if (statement != undefined) {
-      await statement.bind({ limit, offset });
+      if (categoryIdList?.length) {
+        await statement.bind({ limit, offset, tag_id: categoryIdList });
+      } else {
+        await statement.bind({ limit, offset });
+      }
       const results = await statement.get();
       if (results) {
         return results;
       }
     }
-    return Promise.resolve([]);
+    console.log(statement);
+    console.log(statement?.run());
+    return Promise.resolve([] as ProductListType);
   }
 
   // For testing purposes: This class should never be extended so no worries on it being private
   protected __createDB() {
     writeFileSync(process.cwd() + this.dbPath, "");
   }
-
   // For testing purposes: This class should never be extended so no worries on it being private
   protected async __initDB() {
     //Check if db exists
@@ -192,7 +206,6 @@ export default class SQLiteDB implements DataAdapter {
       }
     }
   }
-
   // protected for testing purposes: Creation of all possible tables
   protected __initProductTable(): string {
     return `CREATE TABLE IF NOT EXISTS product (
@@ -246,7 +259,6 @@ export default class SQLiteDB implements DataAdapter {
       REFERENCES customer (customer_id)
     )`;
   }
-
   protected __initOrderProductLookUpTable(): string {
     //No delete on cascase want it harder for deletion since it shouldn't be done but archived
     return `CREATE TABLE IF NOT EXISTS order_product_lookup (
@@ -260,7 +272,6 @@ export default class SQLiteDB implements DataAdapter {
       REFERENCES product (product_id)
     )`;
   }
-
   protected __initVariantsTable(): string {
     return `CREATE TABLE IF NOT EXISTS variant (
     variant_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -299,7 +310,6 @@ export default class SQLiteDB implements DataAdapter {
     sale_end_date TEXT NOT NULL
     )`;
   }
-
   protected __initPromoTagLookUpTable(): string {
     return `CREATE TABLE IF NOT EXISTS promo_tag_lookup (
     promot_id INTEGER PRIMARY KEY AUTOINCREMENT,

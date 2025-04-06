@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Product as ProductType } from "./types";
+import { ProductType } from "@/lib/api/data_adapter/models/products";
 
 export default function Product({ product }: { product: ProductType }) {
   useEffect(() => {

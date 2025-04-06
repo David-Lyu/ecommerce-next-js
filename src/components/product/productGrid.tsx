@@ -1,7 +1,7 @@
 import Product from "./product";
-import { ProductList } from "./types";
+import { ProductListPropType } from "./types";
 
-export default function ProductsGrid(props: ProductList) {
+export default function ProductsGrid(props: ProductListPropType) {
   return (
     <section>
       {props.productList.map((product) => {
