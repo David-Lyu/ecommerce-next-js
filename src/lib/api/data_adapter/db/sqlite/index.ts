@@ -16,30 +16,17 @@ export default class SQLiteDB implements DataAdapter {
   db: Database | undefined;
   isInitailized: boolean = false;
   dbPath: string = "/src/lib/api/data_adapter/db/sqlite/sqlite.db";
-  constructor() {
-    //Init database here
-    //fs to see if file exists
-  }
+  constructor() {}
 
   /**
-   * Do not use doesn't do anything haha
+   * Initalizes database, should be ran in init route
    * @returns void
    */
   async initialize() {
-    // let i = 0;
-    // while (!this.db) {
-    //   i++;
-    //   if (i % 1000000 == 0) {
-    //     console.log(this.db);
-    //     console.log("waiting for db" + i);
-    //   }
-    // }
-    // console.log("db initialized");
     await this.__initDB();
-    console.log(this.db);
   }
 
-  getProduct(id: number): Promise<ProductType> {
+  async getProduct(id: number): Promise<ProductType> {
     let sql = "SELECT * FROM product \n";
     //get category id from name?
     sql += "WHERE product_id = ?";
@@ -67,36 +54,29 @@ export default class SQLiteDB implements DataAdapter {
     offset: number = 0,
     categoryIdList?: number[],
   ): Promise<ProductListType> {
-    let sql = "SELECT * FROM product\n";
+    const preparedData: { [key: string]: number } = {
+      "@limit": limit,
+      "@offset": offset,
+    };
+    let sql = "SELECT * FROM product ";
+
+    //Logic for categoryIdList
     if (categoryIdList?.length) {
       sql +=
         "INNER JOIN product_tag_lookup as PTL on product.product_id = PTL.product_id WHERE tag_id IN (";
       for (let i = 0; i < categoryIdList.length; i++) {
-        sql += "?";
+        sql += "@catId" + i;
         // Adds comma to everything but the last ?
         if (i < categoryIdList.length - 1) sql += ",";
+        //Adds the params into preparedData
+        preparedData["@catId" + i] = categoryIdList[i];
       }
-      sql += ") and ";
+      sql += ") ";
     }
-    sql += "LIMIT=? AND offset=?;";
-    console.log(sql);
+    sql += "limit @limit offset @offset;";
 
-    const statement = await this.db?.prepare(sql);
-    console.log(this.db);
-    if (statement != undefined) {
-      if (categoryIdList?.length) {
-        await statement.bind({ limit, offset, tag_id: categoryIdList });
-      } else {
-        await statement.bind({ limit, offset });
-      }
-      const results = await statement.get();
-      if (results) {
-        return results;
-      }
-    }
-    console.log(statement);
-    console.log(statement?.run());
-    return Promise.resolve([] as ProductListType);
+    // Returns empty array if undefined
+    return (await this.db?.all<ProductListType>(sql, preparedData)) ?? [];
   }
 
   // For testing purposes: This class should never be extended so no worries on it being private

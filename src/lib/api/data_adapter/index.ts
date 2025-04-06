@@ -7,13 +7,12 @@ enum API_TYPE {
   THIRD_PARTY = "THIRD_PARTY",
 }
 
-async function init(): Promise<DataAdapter> {
+function init(): DataAdapter {
   let adapter: DataAdapter;
   //get .env here
   switch (process.env.API_TYPE as API_TYPE) {
     case API_TYPE.SQLITE:
       adapter = new SQLiteDB();
-      await adapter.initialize();
       break;
     case API_TYPE.THIRD_PARTY:
     //init third party data fetching here:
@@ -21,7 +20,6 @@ async function init(): Promise<DataAdapter> {
     default:
       throw new Error("we have not implemented that type");
   }
-  console.log(adapter);
   return adapter;
 }
 const DataAPI = init();

@@ -4,6 +4,6 @@ export async function GET(req: Request) {
   if (!req) {
     console.log(req);
   }
-  (await DataAPI).getProducts(0, 0, [1, 2]);
+  DataAPI.getProducts(10, 0, [1, 2]);
   return Response.json({});
 }
