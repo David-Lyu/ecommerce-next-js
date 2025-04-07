@@ -27,7 +27,6 @@ export default class SQLiteDB implements DataAdapter {
   }
 
   async getProduct(id: number): Promise<ProductType> {
-    console.log("this is db: ", this.db);
     const result = await this.db?.get<ProductType>(
       "SELECT * FROM product WHERE product_id = :id",
       { ":id": id },
