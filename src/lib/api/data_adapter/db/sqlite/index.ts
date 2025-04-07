@@ -13,6 +13,7 @@ import { AdminType, CustomerType } from "../../models/users";
   as fast as ram available to open, read and parse the file/buffer)
 */
 export default class SQLiteDB implements DataAdapter {
+  /* Bug cannot use in server action/component: Todo: Make it into a promise */
   db: Database | undefined;
   isInitailized: boolean = false;
   dbPath: string = "/src/lib/api/data_adapter/db/sqlite/sqlite.db";

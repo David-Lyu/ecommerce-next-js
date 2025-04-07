@@ -1,4 +1,4 @@
-export default class RouteAuth {
+class RouteAuth {
   authHash = "";
   constructer() {}
 
@@ -6,3 +6,5 @@ export default class RouteAuth {
     return false;
   }
 }
+const routeAuth = new RouteAuth();
+export default routeAuth;

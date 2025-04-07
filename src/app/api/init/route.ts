@@ -9,6 +9,7 @@ export async function GET(req: Request) {
     await DataAPI.initialize();
     hasInit = true;
     message = "Database Intialized";
+    console.log("Starting CRON for auto-rotating internal hash routes");
   } else {
     message = "Database already Initialized";
   }
