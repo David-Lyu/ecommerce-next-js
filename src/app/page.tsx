@@ -4,7 +4,6 @@
 export default function Home() {
   return (
     <>
-      <section>Header</section>
       <section className="main-content">
         <section>Aside</section>
         <section>
@@ -12,7 +11,6 @@ export default function Home() {
           <section>Search</section>
         </section>
       </section>
-      <section>Footer</section>
     </>
   );
 }

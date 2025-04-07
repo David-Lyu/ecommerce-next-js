@@ -27,26 +27,12 @@ export default class SQLiteDB implements DataAdapter {
   }
 
   async getProduct(id: number): Promise<ProductType> {
-    let sql = "SELECT * FROM product \n";
-    //get category id from name?
-    sql += "WHERE product_id = ?";
-    if (this.db) {
-      this.db
-        .prepare(sql)
-        .then((statement) => {
-          statement.bind(id);
-        })
-        .catch(console.error);
-    }
-    const objMock = {
-      id: 0,
-      price: 0.0,
-      title: "test",
-      description: "Test Description",
-      image: "",
-    };
-
-    return Promise.resolve(objMock);
+    console.log("this is db: ", this.db);
+    const result = await this.db?.get<ProductType>(
+      "SELECT * FROM product WHERE product_id = :id",
+      { ":id": id },
+    );
+    return result ?? ({} as ProductType);
   }
 
   async getProducts(
