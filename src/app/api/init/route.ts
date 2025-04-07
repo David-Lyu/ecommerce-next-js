@@ -6,7 +6,7 @@ export async function GET(req: Request) {
   let message = "";
   if (!hasInit) {
     console.log("Intializing Database");
-    await (await DataAPI).initialize();
+    await DataAPI.initialize();
     hasInit = true;
     message = "Database Intialized";
   } else {

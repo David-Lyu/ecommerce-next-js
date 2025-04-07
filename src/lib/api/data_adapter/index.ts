@@ -7,7 +7,7 @@ enum API_TYPE {
   THIRD_PARTY = "THIRD_PARTY",
 }
 
-async function init(): Promise<DataAdapter> {
+function init(): DataAdapter {
   let adapter: DataAdapter;
   //get .env here
   switch (process.env.API_TYPE as API_TYPE) {
