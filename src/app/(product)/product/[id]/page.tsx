@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 type props = {
   params: Promise<{ id: string }>;
 };
-export default async function Page({ params }: props) {
+const Page = async ({ params }: props) => {
   const id = Number((await params).id);
-  //
+
   if (isNaN(id)) notFound();
   const request = await fetch(
     `http://localhost:${process.env.PORT}/api/product?id=` + id,
@@ -34,4 +34,5 @@ export default async function Page({ params }: props) {
       <h3>Title</h3>
     </section>
   );
-}
+};
+export default Page;
