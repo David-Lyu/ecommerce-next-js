@@ -55,10 +55,7 @@ export default class SQLiteDB implements DataAdapter {
     offset: number = 0,
     categoryIdList?: number[],
   ): Promise<ProductListType> {
-    const preparedData: { [key: string]: number } = {
-      "@limit": limit,
-      "@offset": offset,
-    };
+    const preparedData: { [key: string]: number } = {};
     let sql = "SELECT * FROM product ";
 
     //Logic for categoryIdList
@@ -74,7 +71,12 @@ export default class SQLiteDB implements DataAdapter {
       }
       sql += ") ";
     }
-    sql += "limit @limit offset @offset;";
+    if (limit > 0) {
+      preparedData["@limit"] = limit;
+      preparedData["@offset"] = offset > 0 ? offset : 0;
+      sql += "limit @limit offset @offset";
+    }
+    sql += ";";
 
     // Returns empty array if undefined
     return (await this.db?.all<ProductListType>(sql, preparedData)) ?? [];

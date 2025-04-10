@@ -1,3 +1,4 @@
+import { ProductType } from "@/lib/api/data_adapter/models/products";
 import { NextResponse } from "next/server";
 
 type props = {
@@ -5,7 +6,7 @@ type props = {
 };
 const Page = async ({ params }: props) => {
   const id = Number((await params).id);
-  if (isNaN(id)) return NextResponse.error();
+  if (isNaN(id)) return NextResponse.json({ data: {} });
   const request = await fetch(
     `http://localhost:${process.env.PORT}/api/product?id=` + id,
     {
@@ -15,7 +16,7 @@ const Page = async ({ params }: props) => {
       },
     },
   );
-  let results = {};
+  let results: ProductType | undefined;
   try {
     if (request.status === 200) {
       results = await request.json();
@@ -30,6 +31,7 @@ const Page = async ({ params }: props) => {
   return (
     <section>
       <h3>Title</h3>
+      <p>{results?.title}</p>
     </section>
   );
 };
