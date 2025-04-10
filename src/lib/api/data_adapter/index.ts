@@ -12,7 +12,7 @@ function init(): DataAdapter {
   //get .env here
   switch (process.env.API_TYPE as API_TYPE) {
     case API_TYPE.SQLITE:
-      adapter = new SQLiteDB();
+      adapter = SQLiteDB.getInstance();
       break;
     case API_TYPE.THIRD_PARTY:
     //init third party data fetching here:

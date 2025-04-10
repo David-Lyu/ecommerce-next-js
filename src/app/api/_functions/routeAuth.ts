@@ -1,7 +1,12 @@
-import { NextRequest } from "next/server";
-import RouteAuth from "@/lib/auth/route_auth";
-import { notFound } from "next/navigation";
+import { NextRequest, NextResponse } from "next/server";
 
 export function routeAuth(req: NextRequest) {
-  if (req.headers.get("route_token") !== RouteAuth.authHash) notFound();
+  if (req.headers.get("route_token") === process.env.ROUTE_HASH) {
+    return true;
+  }
+}
+export function routeAuth404(req: NextRequest) {
+  if (!routeAuth(req)) {
+    return NextResponse.error();
+  }
 }

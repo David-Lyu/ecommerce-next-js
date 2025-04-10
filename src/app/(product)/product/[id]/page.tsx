@@ -1,19 +1,17 @@
-import routeAuth from "@/lib/auth/route_auth";
-import { notFound } from "next/navigation";
+import { NextResponse } from "next/server";
 
 type props = {
   params: Promise<{ id: string }>;
 };
 const Page = async ({ params }: props) => {
   const id = Number((await params).id);
-
-  if (isNaN(id)) notFound();
+  if (isNaN(id)) return NextResponse.error();
   const request = await fetch(
     `http://localhost:${process.env.PORT}/api/product?id=` + id,
     {
       headers: {
         "Content-Type": "application/json",
-        route_token: routeAuth.authHash,
+        route_token: process.env.ROUTE_HASH,
       },
     },
   );

@@ -17,14 +17,29 @@ export default class SQLiteDB implements DataAdapter {
   db: Database | undefined;
   isInitailized: boolean = false;
   dbPath: string = "/src/lib/api/data_adapter/db/sqlite/sqlite.db";
-  constructor() {}
+  private static _instance: DataAdapter;
+  private constructor() {
+    this.__initDB()
+      .then(() => {
+        console.log("Initialized");
+      })
+      .catch(console.error);
+  }
+
+  static getInstance() {
+    if (!this._instance) {
+      console.log("data adapter init");
+      this._instance = new this() as DataAdapter;
+    }
+    return this._instance;
+  }
 
   /**
    * Initalizes database, should be ran in init route
    * @returns void
    */
   async initialize() {
-    await this.__initDB();
+    // await this.__initDB();
   }
 
   async getProduct(id: number): Promise<ProductType> {
