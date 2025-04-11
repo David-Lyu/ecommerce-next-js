@@ -1,7 +1,21 @@
 import { ProductListType } from "@/lib/api/data_adapter/models/products";
+import { SearchParams } from "next/dist/server/request/search-params";
 
-const Page = async () => {
-  let results: ProductListType | undefined;
+type ApiResponse = {
+  data: ProductListType;
+};
+
+const Page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) => {
+  let results: ApiResponse | undefined;
+  const limit = parseQueryParams((await searchParams).limit);
+  const offset = parseQueryParams((await searchParams).offset);
+  const tagList = parseQueryTags((await searchParams).categories);
+
+  console.log(limit, offset, tagList);
   try {
     const request = await fetch(
       `http://localhost:${process.env.PORT}/api/products`,
@@ -20,7 +34,7 @@ const Page = async () => {
   } catch (err) {
     console.error(err);
   }
-  console.log(results);
+  console.log(results?.data[0]);
 
   return (
     <div>
@@ -29,3 +43,27 @@ const Page = async () => {
   );
 };
 export default Page;
+
+function parseQueryParams(param: string | string[] | undefined): number {
+  if (typeof param !== "string") return 0;
+  const num = Number(param);
+  return !isNaN(num) ? num : 0;
+}
+
+function parseQueryTags(param: string[] | undefined | string): number[] {
+  if (typeof param === "string") {
+    return [parseQueryParams(param)];
+  }
+
+  const numArr: number[] = [];
+  if (param?.length) {
+    for (let i = 0; i < param.length; i++) {
+      const id = Number(param[i]);
+      if (!isNaN(id)) {
+        numArr.push(id);
+      }
+    }
+  }
+
+  return numArr;
+}
