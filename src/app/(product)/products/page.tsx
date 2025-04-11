@@ -1,49 +1,32 @@
+import ProductsGrid from "@/components/product/productGrid";
 import { ProductListType } from "@/lib/api/data_adapter/models/products";
 import { SearchParams } from "next/dist/server/request/search-params";
 
-type ApiResponse = {
-  data: ProductListType;
+type Props = {
+  searchParams: Promise<SearchParams>;
 };
 
-const Page = async ({
-  searchParams,
-}: {
-  searchParams: Promise<SearchParams>;
-}) => {
-  let results: ApiResponse | undefined;
-  const limit = parseQueryParams((await searchParams).limit);
+const Page = async ({ searchParams }: Props) => {
+  const limit = parseQueryParams((await searchParams).limit) || 10;
   const offset = parseQueryParams((await searchParams).offset);
   const tagList = parseQueryTags((await searchParams).categories);
 
-  console.log(limit, offset, tagList);
-  try {
-    const request = await fetch(
-      `http://localhost:${process.env.PORT}/api/products`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          route_token: process.env.ROUTE_HASH,
-        },
-      },
-    );
-    if (request.status === 200) {
-      results = await request.json();
-    } else {
-      throw new Error("request status: " + request.status);
-    }
-  } catch (err) {
-    console.error(err);
-  }
-  console.log(results?.data[0]);
+  const productList: ProductListType = await getProducts(
+    limit,
+    offset,
+    tagList,
+  );
 
   return (
     <div>
-      Hello <p>world</p>
+      {/* Tag filter here */}
+      <ProductsGrid productList={productList} />
     </div>
   );
 };
 export default Page;
 
+//Parse query params
 function parseQueryParams(param: string | string[] | undefined): number {
   if (typeof param !== "string") return 0;
   const num = Number(param);
@@ -66,4 +49,49 @@ function parseQueryTags(param: string[] | undefined | string): number[] {
   }
 
   return numArr;
+}
+// API Calls
+
+// async function getTags() {}
+
+async function getProducts(limit: number, offset: number, tagList: number[]) {
+  let productList: ProductListType = [];
+  try {
+    const productsRequestInfo = {
+      headers: {
+        "Content-Type": "application/json",
+        route_token: process.env.ROUTE_HASH,
+      },
+    };
+    let url = "http://localhost:3000/api/products?";
+
+    if (limit) {
+      url += `limit=${limit}`;
+      if (offset) {
+        url += `&offset=${offset}`;
+      }
+    }
+
+    if (tagList.length) url += "&";
+    tagList.forEach((id, i) => {
+      // Appends the & if not end of tagList
+      url += `tag=${id}` + (i <= tagList.length ? "&" : "");
+    });
+    productList = await doQuery<ProductListType>(url, productsRequestInfo);
+  } catch (err) {
+    console.error(err);
+  }
+  return productList;
+}
+
+async function doQuery<Type>(url: string, params?: RequestInit): Promise<Type> {
+  const response = await fetch(url, params);
+  let data: Type;
+  if (response.ok) {
+    data = ((await response.json()) as { data: Type }).data;
+  } else {
+    throw Error(`Response status: ${response.status}`);
+  }
+
+  return data;
 }

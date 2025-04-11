@@ -10,10 +10,10 @@
   "rating": { "rate": 4.7, "count": 130 }
 */
 export type ProductType = {
-  id: number;
+  product_id: number;
   price: number;
-  title: string;
-  category?: string;
+  name: string;
+  tags?: string[];
   image: string;
   description: string;
 };
