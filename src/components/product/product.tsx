@@ -9,11 +9,13 @@ export default function Product({ product }: { product: ProductType }) {
         <h4>{product.name}</h4>
         {product.image && (
           //Todo add external images to modules.export in config
-          <Image src={product.image} alt={product.name} fill={true} />
+          <div className="product-image-container">
+            <Image src={product.image} alt={product.name} fill={true} />
+          </div>
         )}
         <div className="product-info">
           <p>{product.price}</p>
-          {/* <p>{product.description}</p> */}
+          <p>{product.description}</p>
         </div>
       </section>
     </Link>

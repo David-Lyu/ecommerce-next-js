@@ -1,1 +1,27 @@
 /* Global styles */
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme */
+/*
+    Color schemes:
+    #423E3B - Black olive
+    #FF2E00 - Scarlet
+    #FEA82F - Orange
+    #FFFECB - Cream
+    #4338C8 - Iris
+*/
+
+.global-theme-container {
+    background: #fffecb;
+    color: #423e3b;
+}
+
+.global-theme-container a,
+.global-theme-container a:visited {
+    color: #fea82f;
+}
+
+@media (prefers-color-scheme: dark) {
+    .global-theme-container {
+        background: #423e3b;
+        color: #fffecb;
+    }
+}
