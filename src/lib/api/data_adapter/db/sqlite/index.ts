@@ -4,6 +4,7 @@ import { existsSync, writeFileSync } from "fs";
 import { DataAdapter } from "../../models/adapter";
 import { ProductListType, ProductType } from "../../models/products";
 import { AdminType, CustomerType } from "../../models/users";
+import { ProductTagList, ProductTag } from "../../models/tags";
 
 /*
   So thinking about real life situation, we would want to move this to its own backend.
@@ -40,6 +41,21 @@ export default class SQLiteDB implements DataAdapter {
    */
   async initialize() {
     // await this.__initDB();
+  }
+
+  async getProductTag(id: number): Promise<ProductTag> {
+    const result = await this.db?.get<ProductTag>(
+      "SELECT * FROM product_tag WHERE id = :1",
+      { [":1"]: id },
+    );
+    return result ?? ({} as ProductTag);
+  }
+
+  async getProductTags(): Promise<ProductTagList> {
+    const result = await this.db?.all<ProductTagList>(
+      "SELECT * FROM product_tag",
+    );
+    return result ?? [];
   }
 
   async getProduct(id: number): Promise<ProductType> {
@@ -83,15 +99,11 @@ export default class SQLiteDB implements DataAdapter {
   }
 
   // For testing purposes: This class should never be extended so no worries on it being private
-  protected __createDB() {
-    writeFileSync(process.cwd() + this.dbPath, "");
-  }
-  // For testing purposes: This class should never be extended so no worries on it being private
   protected async __initDB() {
     //Check if db exists
     if (!existsSync(process.cwd() + this.dbPath)) {
       //open database
-      this.__createDB();
+      writeFileSync(process.cwd() + this.dbPath, "");
     }
 
     this.db = await open({

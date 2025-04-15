@@ -26,12 +26,11 @@ const Page = async ({ params }: props) => {
   } catch (err) {
     console.error(err);
   }
-  console.log(results);
 
   return (
     <section>
       <h3>Title</h3>
-      <p>{results?.title}</p>
+      <p>{results?.name}</p>
     </section>
   );
 };
