@@ -15,7 +15,12 @@ export async function GET(req: NextRequest) {
 
   if (tagNameList.length) {
     tagIdList = [];
-    //Todo: Get tagId
+    tagNameList.forEach((tag) => {
+      const tagId = Number(tag);
+      if (!isNaN(tagId)) {
+        tagIdList.push(tagId);
+      }
+    });
   }
 
   let data: ProductListType | null = null;
