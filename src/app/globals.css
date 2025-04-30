@@ -8,20 +8,35 @@
     #FFFECB - Cream
     #4338C8 - Iris
 */
+:root {
+    --primary-color: #fffecb;
+    --secondary-color: #fea82f;
+    --tertiary-color: #ff2e00;
+    --primary-text-color: #423e3b;
+    --contrast-text-color: #4338c8;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #423e3b;
+        --primary-text-color: #fffecb;
+        --contrast-text-color: #4338c8;
+    }
+}
 
 .global-theme-container {
-    background: #fffecb;
-    color: #423e3b;
+    background: var(--primary-color);
+    color: var(--primary-text-color);
 }
 
 .global-theme-container a,
 .global-theme-container a:visited {
-    color: #fea82f;
+    color: var(--secondary-color);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     .global-theme-container {
         background: #423e3b;
         color: #fffecb;
     }
-}
+} */

@@ -1,6 +1,6 @@
-export type ProductTag = {
+export type ProductTagType = {
   id: number;
   name: string;
 };
 
-export type ProductTagList = ProductTag[];
+export type ProductTagListType = ProductTagType[];

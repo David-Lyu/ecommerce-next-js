@@ -1,0 +1,19 @@
+.product-tag_filter_container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.product-tag_filter {
+    flex: 1 1 33%;
+    border-radius: 10px;
+}
+
+.product-tag_filter:nth-child(odd) {
+    background-color: var(--secondary);
+    border: var(--contrast-text-color);
+}
+.product-tag_filter:nth-child(even) {
+    background-color: var(--s);
+    border: var(--contrast-text-color);
+}

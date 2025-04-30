@@ -4,7 +4,7 @@ import { existsSync, writeFileSync } from "fs";
 import { DataAdapter } from "../../models/adapter";
 import { ProductListType, ProductType } from "../../models/products";
 import { AdminType, CustomerType } from "../../models/users";
-import { ProductTagList, ProductTag } from "../../models/tags";
+import { ProductTagListType, ProductTagType } from "../../models/tags";
 
 /*
   So thinking about real life situation, we would want to move this to its own backend.
@@ -43,16 +43,16 @@ export default class SQLiteDB implements DataAdapter {
     // await this.__initDB();
   }
 
-  async getProductTag(id: number): Promise<ProductTag> {
-    const result = await this.db?.get<ProductTag>(
+  async getProductTag(id: number): Promise<ProductTagType> {
+    const result = await this.db?.get<ProductTagType>(
       "SELECT * FROM product_tag WHERE id = :1",
       { [":1"]: id },
     );
-    return result ?? ({} as ProductTag);
+    return result ?? ({} as ProductTagType);
   }
 
-  async getProductTags(): Promise<ProductTagList> {
-    const result = await this.db?.all<ProductTagList>(
+  async getProductTags(): Promise<ProductTagListType> {
+    const result = await this.db?.all<ProductTagListType>(
       "SELECT * FROM product_tag",
     );
     return result ?? [];

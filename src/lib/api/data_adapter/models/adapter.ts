@@ -1,5 +1,5 @@
 import { ProductListType, ProductType } from "./products";
-import { ProductTag, ProductTagList } from "./tags";
+import { ProductTagType, ProductTagListType } from "./tags";
 
 export interface DataAdapter {
   initialize(): void;
@@ -9,6 +9,6 @@ export interface DataAdapter {
     categoryIdList?: number[],
   ): Promise<ProductListType>;
   getProduct(id: number): Promise<ProductType>;
-  getProductTag(id: number): Promise<ProductTag>;
-  getProductTags(): Promise<ProductTagList>;
+  getProductTag(id: number): Promise<ProductTagType>;
+  getProductTags(): Promise<ProductTagListType>;
 }
