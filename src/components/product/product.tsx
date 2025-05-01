@@ -18,6 +18,7 @@ export default function Product({ product }: { product: ProductType }) {
               height="100"
               blurDataURL="/loading_item_remove_if_prod.jpg"
               placeholder="blur"
+              unoptimized={true}
             />
           </div>
         )}

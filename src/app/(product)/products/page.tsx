@@ -1,9 +1,7 @@
-import ProductsGrid from "@/components/product/productGrid";
-import ProductTagFilters from "@/components/tags/productTagFilters";
+import ProductsPage from "@/components/product/productsPage";
 import { ProductListType } from "@/lib/api/data_adapter/models/products";
 import { ProductTagListType } from "@/lib/api/data_adapter/models/tags";
 import { SearchParams } from "next/dist/server/request/search-params";
-import { MouseEvent } from "react";
 
 type Props = {
   searchParams: Promise<SearchParams>;
@@ -30,23 +28,13 @@ const Page = async ({ searchParams }: Props) => {
     },
   );
 
-  //Todo move this to server actions
-  const onClickTagFilters = (e: MouseEvent) => {
-    console.log(e);
-    const id = (e.currentTarget as HTMLButtonElement).dataset.id;
-    if (id) {
-    }
-  };
-
   return (
-    <div>
-      {/* Tag filter here */}
-      <ProductTagFilters
-        productTagList={productTagList}
-        callBack={onClickTagFilters}
-      />
-      <ProductsGrid productList={productList} />
-    </div>
+    <ProductsPage
+      productList={productList}
+      productTagList={productTagList}
+      limit={limit}
+      offset={offset}
+    />
   );
 };
 export default Page;

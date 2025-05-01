@@ -3,7 +3,7 @@ import { routeAuth } from "../../_functions/routeAuth";
 import DataAPI from "@/lib/api/data_adapter";
 import { notFound } from "next/navigation";
 
-export default async function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
   if (!routeAuth(req)) {
     return NextResponse.error();
   }

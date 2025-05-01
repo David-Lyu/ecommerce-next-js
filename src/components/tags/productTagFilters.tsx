@@ -1,3 +1,4 @@
+"use client";
 import { ProductTagListType } from "@/lib/api/data_adapter/models/tags";
 type Props = {
   productTagList: ProductTagListType;
@@ -5,6 +6,7 @@ type Props = {
 };
 
 export default function ProductTagFilters({ productTagList, callBack }: Props) {
+  console.log(productTagList);
   return productTagList.length ? (
     <section className="product-tag_filter_container">
       {productTagList.map((tag) => {
