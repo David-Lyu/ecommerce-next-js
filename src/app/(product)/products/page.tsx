@@ -1,4 +1,4 @@
-import ProductsPage from "@/components/product/productsPage";
+import ProductsPage from "@/components/pages/productsPage";
 import { ProductListType } from "@/lib/api/data_adapter/models/products";
 import { ProductTagListType } from "@/lib/api/data_adapter/models/tags";
 import { SearchParams } from "next/dist/server/request/search-params";

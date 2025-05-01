@@ -1,7 +1,7 @@
 "use client";
 import { MouseEvent } from "react";
 import ProductTagFilters from "../tags/productTagFilters";
-import ProductsGrid from "./productGrid";
+import ProductsGrid from "../product/productGrid";
 import { getProductsAction } from "@/app/actions/product/product";
 import { ProductTagListType } from "@/lib/api/data_adapter/models/tags";
 import { ProductListType } from "@/lib/api/data_adapter/models/products";
